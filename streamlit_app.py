@@ -28,10 +28,10 @@ for uploaded_file in uploaded_files:
     st.write('Done')
     # TODO Connect to hugchat to interpret data
     # TODO "shareConversationsWithModelAuthors": "false",
-    # TODO Turn this line OFF in https://github.com/Soulter/hugging-chat-api/blob/master/src/hugchat/hugchat.py
-
+    # TODO VERIFY THIS IS TRULY USING THIS FALSE METHOD.  SIMPLE PRINT STATEMENT MIGHT DO.
     email = 'homerkay1@gmail.com'
     passwd = 'Sharebill123'
+    # TODO Make this API protected
 
     # Log in to huggingface and grant authorization to huggingchat
     sign = Login(email, passwd)
