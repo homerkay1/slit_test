@@ -23,6 +23,8 @@ uploaded_files = st.file_uploader("Choose a .png or .jpg file", accept_multiple_
 for uploaded_file in uploaded_files:
     # TODO Check for PDF Version Type
     extractedInformation = pytesseract.image_to_string(Image.open(uploaded_file))
+    # TODO Could try out better alternative? 
+    # https://huggingface.co/microsoft/trocr-base-handwritten
     st.write('Here is the Data From:' + str(uploaded_file))
     st.write(extractedInformation)
     st.write('Done')
