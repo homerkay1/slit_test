@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from io import StringIO
+import re
 
 import pytesseract
 import shutil
@@ -17,6 +18,18 @@ from hugchat.login import Login
 st.title(":blue[**GPTDoc for Mortgage Lenders**] :100:")
 
 st.write('**Upload your documents here for mortage automation**')
+
+option = st.selectbox(
+    'What type of Document are you uploading?',
+    ('Earnest Money Check', 'W2', 'Something else?'))
+
+thisdict = {
+  "Earnest Money Check": "Bank",
+  "W2": "Company",
+  "Something else?": "Something else?"
+}
+
+user_main_input = st.text_input('Input ' + thisdict[option] + ' Name Here:', '')
 
 # TODO does this load on first use? 
 uploaded_files = st.file_uploader("Choose a .png or .jpg file", accept_multiple_files=True)
@@ -55,26 +68,37 @@ for uploaded_file in uploaded_files:
     # Get conversation list
     conversation_list = chatbot.get_conversation_list()
 
-    while True:
-        try:
-            user_input # Checks if user_input alraedy defined.  If not uses this as first pass
-            user_input = input('> ')
-        except:
-            user_input = 'This is text extracted from a document.  What type of document is it?  And what information can you find?  Any data you find please list out line by line:' + '\n' + '\n' + '"' + extractedInformation + '"'
+    # while True:
+    #     try:
+    #         user_input # Checks if user_input alraedy defined.  If not uses this as first pass
+    #         user_input = input('> ')
+    #     except:
+    #         user_input = 'This is text extracted from a document.  What type of document is it?  And what information can you find?  Any data you find please list out line by line:' + '\n' + '\n' + '"' + extractedInformation + '"'
 
-        if user_input.lower() == '':
-            pass
-        elif user_input.lower() in ['q', 'quit']:
-            break
-        elif user_input.lower() in ['c', 'change']:
-            st.write('Choose a conversation to switch to:')
-            st.write(chatbot.get_conversation_list())
-        elif user_input.lower() in ['n', 'new']:
-            st.write('Clean slate!')
-            id = chatbot.new_conversation()
-            chatbot.change_conversation(id)
+    #     if user_input.lower() == '':
+    #         pass
+    #     elif user_input.lower() in ['q', 'quit']:
+    #         break
+    #     elif user_input.lower() in ['c', 'change']:
+    #         st.write('Choose a conversation to switch to:')
+    #         st.write(chatbot.get_conversation_list())
+    #     elif user_input.lower() in ['n', 'new']:
+    #         st.write('Clean slate!')
+    #         id = chatbot.new_conversation()
+    #         chatbot.change_conversation(id)
+    #     else:
+    #         st.write(chatbot.chat(user_input))
+
+
+    if option == 'Earnest Money Check':
+        answer = chatbot.chat('Please answer this question with just the name and nothing else. What bank is this check from?:' + '\n' + '\n' + '"' + extractedInformation + '"')
+        st.write('Bank Name: ' + answer)
+        if re.sub('[.*]+', '', answer).lower() == re.sub('[.*]+', '', user_main_input).lower():
+            st.write(':green[The Bank Matches your Input] :100:')
         else:
-            st.write(chatbot.chat(user_input))
+            st.write(':red[The Bank Name does not match the input]')
+        
+
 
 # TODO 
 # Documents we will need to load and read: 
@@ -85,4 +109,3 @@ for uploaded_file in uploaded_files:
 # Gift letter? <- Probably don't need this one. 
 # Photo ID
 # Renting History
-
