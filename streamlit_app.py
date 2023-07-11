@@ -38,6 +38,8 @@ for uploaded_file in uploaded_files:
     extractedInformation = pytesseract.image_to_string(Image.open(uploaded_file))
     # TODO Could try out better alternative? 
     # https://huggingface.co/microsoft/trocr-base-handwritten
+    # TODO This one is specifically for CHEQUEs
+    # https://github.com/naikshubham/Bank-Cheque-OCR
     st.write('Here is the Data From:' + str(uploaded_file))
     st.write(extractedInformation)
     st.write('Done')
